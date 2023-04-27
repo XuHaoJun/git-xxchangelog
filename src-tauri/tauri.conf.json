@@ -4,7 +4,8 @@
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
     "devPath": "http://localhost:3000",
-    "distDir": "../out"
+    "distDir": "../dist",
+    "withGlobalTauri": false
   },
   "package": {
     "productName": "git-xxchangelog",
@@ -29,7 +30,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.github.xuhaojun",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -56,10 +57,13 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "resizable": true,
         "title": "git-xxchangelog",
-        "width": 800
+        "center": true,
+        "resizable": true,
+        "decorations": false,
+        "transparent": true,
+        "height": 920,
+        "width": 1300
       }
     ]
   }
