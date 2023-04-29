@@ -7,9 +7,10 @@ export default function Home() {
   const handleClick = async () => {
     // import { open } from "@tauri-apps/api/dialog";
     // import { appDataDir } from "@tauri-apps/api/path";
-    const [{ open }, { appDataDir }] = await Promise.all([
+    const [{ open }, { appDataDir }, { invoke }] = await Promise.all([
       import("@tauri-apps/api/dialog"),
       import("@tauri-apps/api/path"),
+      import("@tauri-apps/api"),
     ]);
     // Open a selection dialog for directories
     const selected = await open({
@@ -17,7 +18,7 @@ export default function Home() {
       multiple: false,
       defaultPath: await appDataDir(),
     });
-    console.log(selected);
+    invoke("print_git", { path: selected });
     if (Array.isArray(selected)) {
       // user selected multiple directories
     } else if (selected === null) {
