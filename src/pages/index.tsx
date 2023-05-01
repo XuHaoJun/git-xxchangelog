@@ -1,113 +1,35 @@
-import Image from "next/image";
-import "@xuhaojun/react-chrome-tabs/css/chrome-tabs.css";
+import { MainLayoutWithRoot } from "@/components/Layouts/MainLayout/MainLayout";
+import { useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
+import { useRootStore } from "@/stores/root.store";
+import { useEffect, useState } from "react";
+import { useStore } from "zustand";
+import { shallow } from "zustand/shallow";
 
-import { Inter } from "next/font/google";
-import { useMemo, useState } from "react";
+// export default function HomePage() {
+//   const rootStore = useRootStore();
+//   const [tabs, activateTabId, tabUrls] = useStore(
+//     rootStore.mainLayout,
+//     (state) => [state.tabs, state.activateTabId, state.tabUrls],
+//     shallow
+//   );
 
-import type { TabsProps } from "@xuhaojun/react-chrome-tabs";
-import dynamic from "next/dynamic";
+//   const [tabUrl, setTabUrl] = useState<TabUrl>();
+//   const activateTab = tabs.find((x) => x.id === activateTabId);
+//   useEffect(() => {
+//     if (activateTabId) {
+//       setTabUrl(tabUrls[activateTabId]);
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [activateTab]);
 
-const Tabs = dynamic(
-  () => import("@xuhaojun/react-chrome-tabs").then((x) => x.Tabs),
-  {
-    ssr: false,
-  }
-);
+//   return (
+//     <MainLayoutWithRoot>
+//       {tabUrl?.page === "git" ? <GitPage></GitPage> : <NewTabPage></NewTabPage>}
+//     </MainLayoutWithRoot>
+//   );
+// }
 
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Home() {
-  const [commits, setCommits] = useState<any[]>([]);
-  const handleClick = async () => {
-    const [{ open }, { appDataDir }, { invoke }] = await Promise.all([
-      import("@tauri-apps/api/dialog"),
-      import("@tauri-apps/api/path"),
-      import("@tauri-apps/api"),
-    ]);
-    const selected = await open({
-      directory: true,
-      multiple: false,
-      defaultPath: await appDataDir(),
-    });
-    if (selected) {
-      const resp: any = await invoke("print_git", { path: selected });
-      setCommits(resp.commits);
-    }
-  };
-
-  const [tabs, setTabs] = useState<TabsProps["tabs"]>([
-    {
-      id: "repo1",
-      title: "repo1",
-      active: true,
-      favicon: "https://git-scm.com/favicon.ico",
-    },
-    {
-      id: "repo2",
-      title: "repo2",
-      active: false,
-
-      favicon: "https://git-scm.com/favicon.ico",
-    },
-    {
-      id: "repo3",
-      title: "repo3",
-      active: false,
-
-      favicon: "https://git-scm.com/favicon.ico",
-    },
-  ]);
-  const active = (id: string) => {
-    setTabs(tabs.map((tab) => ({ ...tab, active: id === tab.id })));
-  };
-
-  const close = (id: string) => {
-    setTabs(tabs.filter((tab) => tab.id !== id));
-  };
-
-  const reorder = (tabId: string, fromIndex: number, toIndex: number) => {
-    const beforeTab = tabs.find((tab) => tab.id === tabId);
-    if (!beforeTab) {
-      return;
-    }
-    let newTabs = tabs.filter((tab) => tab.id !== tabId);
-    newTabs.splice(toIndex, 0, beforeTab);
-    setTabs(newTabs);
-  };
-
-  const newTab = () => {
-    setTabs([
-      ...tabs.map((x) => ({ ...x, active: false })),
-      { id: `${Math.random()}`, title: "New tab", active: true },
-    ]);
-  };
-
-  const activeTabId = useMemo(() => tabs.find((x) => x.active)?.id, [tabs]);
-
-  return (
-    <main style={{ width: "100%", height: "100%" }}>
-      <div className="sticky top-0">
-        <Tabs
-          tabs={tabs}
-          onTabClose={close}
-          onTabReorder={reorder}
-          onTabActive={active}
-          onNewTab={newTab}
-        />
-      </div>
-      <button onClick={handleClick}>open repo</button>
-      {activeTabId === "repo1" && (
-        <ol>
-          {commits.map((x) => (
-            <li key={x.oid}>
-              <div>
-                {x.author.name}&nbsp;{x.author.email}
-              </div>
-              <div>{x.message}</div>
-            </li>
-          ))}
-        </ol>
-      )}
-    </main>
-  );
+export default function HomePage() {
+  useTauriLibs();
+  return <div>Loading...</div>;
 }

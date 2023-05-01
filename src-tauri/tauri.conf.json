@@ -18,6 +18,12 @@
       },
       "path": {
         "all": true
+      },
+      "shell": {
+        "open": true
+      },
+      "fs": {
+        "all": true
       }
     },
     "bundle": {
