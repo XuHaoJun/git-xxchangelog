@@ -7,15 +7,18 @@ import {
 } from "@/components/Layouts/MainLayout/MainLayout.store";
 import { GitState, createGitStore } from "./git.store";
 import { identity } from "rambda";
+import { SettingsState, createSettingsStore } from "./settings.store";
 
 export interface RootState {
   mainLayout: StoreApi<MainLayoutState>;
   git: StoreApi<GitState>;
+  settings: StoreApi<SettingsState>;
 }
 
 export const rootState: RootState = {
   mainLayout: createMainLayoutStore(),
   git: createGitStore(),
+  settings: createSettingsStore(),
 };
 
 export const RootStoreContext = createContext<RootState>(rootState);

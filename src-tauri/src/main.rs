@@ -192,7 +192,14 @@ fn parse_git(path: &str) -> Result<GitResponse, String> {
 }
 
 #[tauri::command]
-async fn get_work_item(access_token: String, org: String, id: String, project: String) {
+async fn get_work_item(
+    access_token: String,
+    org: String,
+    id: String,
+    project: String,
+) -> Result<azure_devops_rust_api::wit::models::WorkItem, String> {
+    println!("{}, {}, {}, {}", access_token, org, id, project);
+
     // Get authentication credential
     let credential = azure_devops_rust_api::Credential::from_pat(access_token);
 
@@ -206,6 +213,7 @@ async fn get_work_item(access_token: String, org: String, id: String, project: S
         .await
         .unwrap();
     println!("Work item [{work_item_id}]:\n{:#?}", work_item);
+    Ok(work_item)
 }
 
 fn main() {

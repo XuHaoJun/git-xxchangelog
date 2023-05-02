@@ -1,22 +1,34 @@
 import { createStore } from "zustand";
 import { produce } from "immer";
+import { persist } from "zustand/middleware";
 
 export interface AzureDevOpsConfig {
-  organization: string;
-  project: string;
-  accessToken: string;
+  organization?: string;
+  project?: string;
+  accessToken?: string;
+}
+
+export interface Settings {
+  azureDevOps: AzureDevOpsConfig;
 }
 
 export interface SettingsState {
-  azureDevOps?: AzureDevOpsConfig;
+  settings: Settings;
+  setSettings: (nextSettings: Settings) => void;
 }
 
 export const createSettingsStore = () =>
-  createStore<SettingsState>((set, get) => ({
-    setAzureDevOps: (config: AzureDevOpsConfig) =>
-      set((state) =>
-        produce(state, (draft) => {
-          draft.azureDevOps = config;
-        })
-      ),
-  }));
+  createStore<SettingsState, [["zustand/persist", unknown]]>(
+    persist(
+      (set, get) => ({
+        settings: { azureDevOps: {} },
+        setSettings: (nextSettings) =>
+          set((state) =>
+            produce(state, (draft) => {
+              draft.settings = nextSettings;
+            })
+          ),
+      }),
+      { name: "settings" }
+    )
+  );

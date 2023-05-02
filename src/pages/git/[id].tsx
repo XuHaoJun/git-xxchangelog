@@ -27,6 +27,8 @@ import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { useRootStore } from "@/stores/root.store";
+import { take } from "rambda";
+import MinimapScrollbar from "../../components/Scrollbars/MinimapScrollbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -179,15 +181,15 @@ export default function GitPage() {
           });
         }}
       </Gitgraph> */}
-      <Scrollbars style={{ width: "100vw", height: "90vh" }}>
+      <MinimapScrollbar style={{ width: "100vw", height: "100vh" }}>
         <ol>
-          {data?.commits.map((x: any) => (
+          {take(300, data?.commits || []).map((x: any) => (
             <li key={x.oid}>
               <GitMessage data={{ commit: x }} />
             </li>
           ))}
         </ol>
-      </Scrollbars>
+      </MinimapScrollbar>
       {/* <div style={{ width: "100vw", height: "90vh" }}>
         <ReactFlowProvider>
           <Flow commits={data?.commits || []} />

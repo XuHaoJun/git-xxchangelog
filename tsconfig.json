@@ -35,7 +35,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "dist/types/**/*.ts"
-  ],
+, "src/components/ColorScrollbar.jsx"  ],
   "exclude": [
     "node_modules"
   ]

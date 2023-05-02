@@ -2,37 +2,77 @@ import { useQuery } from "react-query";
 
 import { open as shellOpen } from "@tauri-apps/api/shell";
 import { useTauriLibs, useTauriLibs2 } from "@/hooks/tauri/tauriLibs.hook";
-import { Col, Row } from "antd";
+import { Col, Row, Tooltip } from "antd";
 import { take } from "rambda";
 import styled from "styled-components";
+import { useRootStore } from "@/stores/root.store";
+import { shallow } from "zustand/shallow";
+import { useState } from "react";
+
+import { Typography } from "antd";
+
+const { Title } = Typography;
 
 const GitIssueIdSpan = styled.span`
   color: hsl(206, 100%, 40%);
-  cursor: crosshair;
+  cursor: pointer;
 `;
 
 function GitIssueId(props: any) {
   const { tauriLibs } = useTauriLibs2();
-  // const { isLoading } = useQuery(["test"], () => {
-  //   console.log("get_work_item");
-  //   return tauriLibs.api.invoke("get_work_item", {
-  //     org: "",
-  //     id: props.issueId,
-  //     project: "",
-  //     access_token: "",
-  //   });
-  // });
+  const [settings] = useRootStore(
+    (rootStore) => rootStore.settings,
+    (state) => [state.settings],
+    shallow
+  );
 
   const handleClick = (issueId: string) => () => {
-    // shellOpen(
-    //   `https://dev.azure.com///_workitems/edit/${issueId}/`
-    // );
+    shellOpen(
+      `https://dev.azure.com/${settings.azureDevOps.organization}/${settings.azureDevOps.project}/_workitems/edit/${issueId}/`
+    );
+  };
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const { isLoading, data: workItem } = useQuery<any>(
+    ["get_work_item", props.issueId],
+    () => {
+      console.log("get_work_item");
+      return tauriLibs.api.invoke("get_work_item", {
+        accessToken: settings.azureDevOps.accessToken,
+        org: settings.azureDevOps.organization,
+        id: props.issueId,
+        project: settings.azureDevOps.project,
+      });
+    },
+    {
+      enabled:
+        open &&
+        Boolean(settings.azureDevOps.accessToken) &&
+        Boolean(settings.azureDevOps.organization) &&
+        Boolean(settings.azureDevOps.project),
+    }
+  );
+  console.log(workItem);
+  const renderTitle = () => {
+    if (workItem) {
+      return (
+        <div>
+          <Title>{}</Title>
+          {workItem.fields["System.Title"]}
+        </div>
+      );
+    } else {
+      return <span>Loading...</span>;
+    }
   };
 
   return (
-    <GitIssueIdSpan onClick={handleClick(props.issueId)}>
-      {props.value}
-    </GitIssueIdSpan>
+    <Tooltip title={renderTitle()} open={open} onOpenChange={setOpen}>
+      <GitIssueIdSpan onClick={handleClick(props.issueId)}>
+        {props.value}
+      </GitIssueIdSpan>
+    </Tooltip>
   );
 }
 

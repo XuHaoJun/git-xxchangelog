@@ -2,23 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
   /* color: white; */
-  background: white;
+  overflow: hidden;
+  /* /* background-color: #ffffff; */
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.88);
   /* color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -30,7 +19,7 @@ body {
 
 /* width */
 ::-webkit-scrollbar {
-  /* width: 30px; */
+  width: 12px;
 }
 
 /* Track */
@@ -47,7 +36,6 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-
 
 .react-flow__node-custom {
   font-size: 10px;

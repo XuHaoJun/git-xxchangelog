@@ -1,8 +1,9 @@
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import "@/styles/globals.css";
 import "antd/dist/reset.css";
+import "@/styles/globals.css";
+import "@/styles/preflight.css";
 import { RootStoreContext, rootState } from "@/stores/root.store";
 import { MainLayoutWithRoot } from "@/components/Layouts/MainLayout/MainLayout";
 import { TauriLibsContext, useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
