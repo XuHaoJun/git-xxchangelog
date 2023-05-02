@@ -1,4 +1,5 @@
 import { createStore } from "zustand";
+import { persist } from "zustand/middleware";
 import { produce } from "immer";
 
 export interface GitRepo {
@@ -13,13 +14,15 @@ export interface GitState {
 }
 
 export const createGitStore = () =>
-  createStore<GitState>((set, get) => ({
-    repos: {},
+  createStore<GitState>(
+    (set, get) => ({
+      repos: {},
 
-    addRepo: (repo) =>
-      set(
-        produce((state) => {
-          state[repo.path] = repo;
-        })
-      ),
-  }));
+      addRepo: (repo) =>
+        set(
+          produce((state) => {
+            state[repo.path] = repo;
+          })
+        ),
+    })
+  );

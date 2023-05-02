@@ -17,7 +17,7 @@ export interface TauriLibs {
 export function useTauriLibs(): {
   tauriLibs: TauriLibs;
 } {
-  const [libs, setLibs] = useState<TauriLibs>({} as unknown as TauriLibs);
+  const [libs, setLibs] = useState<TauriLibs>(null as unknown as TauriLibs);
 
   useEffect(() => {
     (async () => {

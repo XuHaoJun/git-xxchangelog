@@ -14,6 +14,7 @@ export interface MainLayoutState {
   activateTabId?: string;
 
   toGitTab: (id: string, title: string, url: string) => void;
+  toSettingsTab: (id: string) => void;
   setTabs: (tabs: MainLayoutState["tabs"]) => void;
   reset: () => void;
 }
@@ -33,6 +34,19 @@ export const createMainLayoutStore = () =>
           ...state.tabUrls,
           [id]: url,
         },
+        activateTabId: state.tabs.find((x) => x.active)?.id
+      })),
+
+    toSettingsTab: (id: string) =>
+      set((state) => ({
+        tabs: state.tabs.map((x) =>
+          x.id === id ? { ...x, title: "Settings" } : x
+        ),
+        tabUrls: {
+          ...state.tabUrls,
+          [id]: "/settings",
+        },
+        activateTabId: state.tabs.find((x) => x.active)?.id
       })),
     setTabs: (tabs) =>
       set(() => ({ tabs, activateTabId: tabs.find((x) => x.active)?.id })),

@@ -2,6 +2,8 @@ import { MainLayoutWithRoot } from "@/components/Layouts/MainLayout/MainLayout";
 import { useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
 import { useRootStore } from "@/stores/root.store";
 import { open as dialogOpen } from "@tauri-apps/api/dialog";
+import { Button } from "antd";
+import Link from "next/link";
 import { useStore } from "zustand";
 import { shallow } from "zustand/shallow";
 
@@ -44,7 +46,8 @@ export default function NewTabPage() {
 
   return (
     <main>
-      <button onClick={handleClick}>open repo</button>
+      <Button onClick={handleClick}>open repo</Button>
+      <Link href="/settings">config</Link>
     </main>
   );
 }

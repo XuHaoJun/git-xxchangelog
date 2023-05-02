@@ -151,9 +151,8 @@ export default function GitPage() {
       tauriLibs.api.invoke("parse_git", {
         path: id,
       }),
-    { enabled: Boolean(id) }
+    { enabled: Boolean(id) && Boolean(tauriLibs) }
   );
-  console.log(data);
 
   return (
     <main>
