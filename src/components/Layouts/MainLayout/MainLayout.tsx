@@ -78,9 +78,8 @@ export const MainLayout: FC<MainLayoutProps> = (props) => {
 export const MainLayoutWithRoot = (
   props: Pick<MainLayoutProps, "children">
 ) => {
-  const rootStore = useRootStore();
-  const [tabs, setTabs, activateTabId, tabUrls] = useStore(
-    rootStore.mainLayout,
+  const [tabs, setTabs, activateTabId, tabUrls] = useRootStore(
+    (rootStore) => rootStore.mainLayout,
     (state) => [state.tabs, state.setTabs, state.activateTabId, state.tabUrls],
     shallow
   );

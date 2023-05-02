@@ -1,26 +1,23 @@
-import { MainLayoutWithRoot } from "@/components/Layouts/MainLayout/MainLayout";
-import { useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
-import { useRootStore } from "@/stores/root.store";
+import { useEffect } from "react";
 import { open as dialogOpen } from "@tauri-apps/api/dialog";
 import { Button } from "antd";
 import Link from "next/link";
-import { useStore } from "zustand";
+import { useRouter } from "next/router";
 import { shallow } from "zustand/shallow";
 
-export default function NewTabPage() {
-  const { tauriLibs } = useTauriLibs();
+import { useTauriLibs, useTauriLibs2 } from "@/hooks/tauri/tauriLibs.hook";
+import { useRootStore } from "@/stores/root.store";
 
-  const rootStore = useRootStore();
-  const [activateTabId, toGitTab] = useStore(
-    rootStore.mainLayout,
-    (state) => [state.activateTabId, state.toGitTab],
+export default function NewTabPage() {
+  const { tauriLibs } = useTauriLibs2();
+
+  const [activateTabId, toNewTab] = useRootStore(
+    (rootStore) => rootStore.mainLayout,
+    (state) => [state.activateTabId, state.toNewTab],
     shallow
   );
-  const [addRepo] = useStore(
-    rootStore.git,
-    (state) => [state.addRepo],
-    shallow
-  );
+
+  const router = useRouter();
 
   const handleClick = async () => {
     const selected = (await dialogOpen({
@@ -29,20 +26,16 @@ export default function NewTabPage() {
       defaultPath: await tauriLibs.path.appLocalDataDir(),
     })) as string | undefined;
     if (selected) {
-      const resp: any = await tauriLibs.api.invoke("parse_git", {
-        path: selected,
-      });
-      if (activateTabId) {
-        const tabTitle = await tauriLibs.path.basename(selected);
-        toGitTab(
-          activateTabId,
-          tabTitle,
-          `/git/${encodeURIComponent(selected)}`
-        );
-      }
-      addRepo(resp);
+      router.replace(`/git/${encodeURIComponent(selected)}`);
     }
   };
+
+  useEffect(() => {
+    if (activateTabId) {
+      toNewTab(activateTabId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main>

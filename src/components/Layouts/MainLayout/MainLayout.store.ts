@@ -13,9 +13,12 @@ export interface MainLayoutState {
   tabUrls: Record<string, string>;
   activateTabId?: string;
 
+  setTabs: (tabs: MainLayoutState["tabs"]) => void;
+
   toGitTab: (id: string, title: string, url: string) => void;
   toSettingsTab: (id: string) => void;
-  setTabs: (tabs: MainLayoutState["tabs"]) => void;
+  toNewTab: (id: string) => void;
+
   reset: () => void;
 }
 
@@ -25,30 +28,56 @@ export const createMainLayoutStore = () =>
     tabUrls: {},
     activateTabId: getInitialDefaultTabs()[0].id,
 
+    setTabs: (tabs) =>
+      set(() => ({ tabs, activateTabId: tabs.find((x) => x.active)?.id })),
+
     toGitTab: (id: string, title: string, url: string) =>
       set((state) => ({
         tabs: state.tabs.map((x) =>
-          x.id === id ? { ...x, title, favicon: DEFAULT_FAVICONS.git } : x
+          x.id === id
+            ? produce(x, (draft) => {
+                draft.title = title;
+                draft.favicon = DEFAULT_FAVICONS.git;
+              })
+            : x
         ),
         tabUrls: {
           ...state.tabUrls,
           [id]: url,
         },
-        activateTabId: state.tabs.find((x) => x.active)?.id
+        activateTabId: state.tabs.find((x) => x.active)?.id,
       })),
 
     toSettingsTab: (id: string) =>
       set((state) => ({
         tabs: state.tabs.map((x) =>
-          x.id === id ? { ...x, title: "Settings" } : x
+          x.id === id
+            ? produce(x, (draft) => {
+                draft.title = "Settings";
+              })
+            : x
         ),
         tabUrls: {
           ...state.tabUrls,
           [id]: "/settings",
         },
-        activateTabId: state.tabs.find((x) => x.active)?.id
+        activateTabId: state.tabs.find((x) => x.active)?.id,
       })),
-    setTabs: (tabs) =>
-      set(() => ({ tabs, activateTabId: tabs.find((x) => x.active)?.id })),
+
+    toNewTab: (id: string) =>
+      set((state) => ({
+        tabs: state.tabs.map((x) =>
+          x.id === id
+            ? produce(x, (draft) => {
+                draft.title = "New Tab";
+              })
+            : x
+        ),
+        tabUrls: produce(state.tabUrls, (draft) => {
+          delete draft[id];
+        }),
+        activateTabId: state.tabs.find((x) => x.active)?.id,
+      })),
+
     reset: () => set(() => ({ tabs: getInitialDefaultTabs() })),
   }));

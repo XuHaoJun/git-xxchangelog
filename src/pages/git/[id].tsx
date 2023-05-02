@@ -1,11 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import type { WheelEvent } from "react";
-import Image from "next/image";
-
-import { reverse, take } from "rambda";
-
-import { open as shellOpen } from "@tauri-apps/api/shell";
-import { open as dialogOpen } from "@tauri-apps/api/dialog";
 
 import ReactFlow, {
   addEdge,
@@ -25,18 +19,14 @@ import { Row, Col } from "antd";
 
 import { Inter } from "next/font/google";
 
-import { useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
+import { useTauriLibs, useTauriLibs2 } from "@/hooks/tauri/tauriLibs.hook";
 import { useQuery } from "react-query";
-import { Tabs } from "@/components/Tabs/Tabs";
-import type { TabsProps } from "@/components/Tabs/Tabs";
 import { GitMessage } from "@/components/GitMessage/GitMessage";
-import { MainLayoutWithRoot } from "@/components/Layouts/MainLayout/MainLayout";
-import { RootStoreContext, useRootStore } from "@/stores/root.store";
-import { useStore } from "zustand";
 import { shallow } from "zustand/shallow";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
+import { useRootStore } from "@/stores/root.store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -64,7 +54,6 @@ function Flow({ commits }: any) {
   //     const viewport = getViewport();
   //     setViewport({ ...viewport, y: viewport.y + 300 });
   //   }
-  //   console.log("space pressed", spacePressed);
   // }, [getViewport, setViewport, spacePressed]);
 
   const handleScroll = useCallback(
@@ -117,8 +106,6 @@ function Flow({ commits }: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commits]);
 
-  console.log("render");
-
   return (
     <ReactFlow
       onPaneScroll={handleScroll}
@@ -141,7 +128,7 @@ function Flow({ commits }: any) {
 }
 
 export default function GitPage() {
-  const { tauriLibs } = useTauriLibs();
+  const { tauriLibs } = useTauriLibs2();
   const router = useRouter();
   const { id } = router.query;
 
@@ -153,6 +140,21 @@ export default function GitPage() {
       }),
     { enabled: Boolean(id) && Boolean(tauriLibs) }
   );
+
+  const [activateTabId, toGitTab] = useRootStore(
+    (rootStore) => rootStore.mainLayout,
+    (state) => [state.activateTabId, state.toGitTab],
+    shallow
+  );
+  useEffect(() => {
+    if (activateTabId && tauriLibs) {
+      (async () => {
+        const tabTitle = await tauriLibs.path.basename(id as string);
+        toGitTab(activateTabId, tabTitle, router.asPath);
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tauriLibs]);
 
   return (
     <main>

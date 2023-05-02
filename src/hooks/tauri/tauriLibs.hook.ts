@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState, createContext } from "react";
 
 import type { invoke } from "@tauri-apps/api";
 import type { appLocalDataDir, dirname, basename } from "@tauri-apps/api/path";
@@ -12,6 +12,20 @@ export interface TauriLibs {
     basename: typeof basename;
     appLocalDataDir: typeof appLocalDataDir;
   };
+}
+
+export const TauriLibsContext = createContext<{
+  tauriLibs: TauriLibs;
+}>(
+  null as unknown as {
+    tauriLibs: TauriLibs;
+  }
+);
+
+export function useTauriLibs2(): {
+  tauriLibs: TauriLibs;
+} {
+  return useContext(TauriLibsContext);
 }
 
 export function useTauriLibs(): {

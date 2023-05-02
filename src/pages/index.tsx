@@ -1,6 +1,7 @@
 import { MainLayoutWithRoot } from "@/components/Layouts/MainLayout/MainLayout";
 import { useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
 import { useRootStore } from "@/stores/root.store";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useStore } from "zustand";
 import { shallow } from "zustand/shallow";
@@ -30,6 +31,7 @@ import { shallow } from "zustand/shallow";
 // }
 
 export default function HomePage() {
-  useTauriLibs();
+  // const router = useRouter();
+  // router.replace("/new-tab");
   return <div>Loading...</div>;
 }

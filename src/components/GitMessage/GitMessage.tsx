@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { open as shellOpen } from "@tauri-apps/api/shell";
-import { useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
+import { useTauriLibs, useTauriLibs2 } from "@/hooks/tauri/tauriLibs.hook";
 import { Col, Row } from "antd";
 import { take } from "rambda";
 import styled from "styled-components";
@@ -12,7 +12,7 @@ const GitIssueIdSpan = styled.span`
 `;
 
 function GitIssueId(props: any) {
-  const { tauriLibs } = useTauriLibs();
+  const { tauriLibs } = useTauriLibs2();
   // const { isLoading } = useQuery(["test"], () => {
   //   console.log("get_work_item");
   //   return tauriLibs.api.invoke("get_work_item", {

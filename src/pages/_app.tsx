@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import "antd/dist/reset.css";
 import { RootStoreContext, rootState } from "@/stores/root.store";
 import { MainLayoutWithRoot } from "@/components/Layouts/MainLayout/MainLayout";
+import { TauriLibsContext, useTauriLibs } from "@/hooks/tauri/tauriLibs.hook";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,13 +18,19 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const libs = useTauriLibs();
+  if (!libs) {
+    return <div>Loading...</div>;
+  }
   return (
-    <QueryClientProvider client={queryClient}>
-      <RootStoreContext.Provider value={rootState}>
-        <MainLayoutWithRoot>
-          <Component {...pageProps} />
-        </MainLayoutWithRoot>
-      </RootStoreContext.Provider>
-    </QueryClientProvider>
+    <TauriLibsContext.Provider value={libs}>
+      <QueryClientProvider client={queryClient}>
+        <RootStoreContext.Provider value={rootState}>
+          <MainLayoutWithRoot>
+            <Component {...pageProps} />
+          </MainLayoutWithRoot>
+        </RootStoreContext.Provider>
+      </QueryClientProvider>
+    </TauriLibsContext.Provider>
   );
 }
