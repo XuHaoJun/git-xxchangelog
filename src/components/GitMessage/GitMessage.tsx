@@ -1,15 +1,18 @@
 import { useQuery } from "react-query";
 
 import { open as shellOpen } from "@tauri-apps/api/shell";
-import { useTauriLibs, useTauriLibs2 } from "@/hooks/tauri/tauriLibs.hook";
+import { useTauriLibs2 } from "@/hooks/tauri/tauriLibs.hook";
 import { Col, Row, Tooltip } from "antd";
 import { take } from "rambda";
 import styled from "styled-components";
 import { useRootStore } from "@/stores/root.store";
 import { shallow } from "zustand/shallow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Typography } from "antd";
+
+import parse, { Element as HtmlReactElement } from "html-react-parser";
+import AzureImage from "../AzureImage/AzureImage";
 
 const { Title, Paragraph } = Typography;
 
@@ -53,25 +56,33 @@ function GitIssueId(props: any) {
         Boolean(settings.azureDevOps.project),
     }
   );
+  useEffect(() => {}, []);
   const renderTitle = () => {
     if (workItem) {
       const descriptionHtml = workItem.fields["System.Description"] as string;
-      // const regexp = /<img\s+[^>]*?src=(['"])(?<src>[^'"]+)\1[^>]*?>/g;
-      // console.log(regexp.exec(descriptionHtml));
-      // console.log(descriptionHtml.replace(regexp, "fasdjiofjasodifjpaisodjfpasdjfiapsoidfj"))
-      // const foo = descriptionHtml.replace(
-      //   regexp,
-      //   `<img src onerror="fetch('$2',{headers: {Authorization: 'Basic :${settings.azureDevOps.accessToken}'}}).then(r=>r.blob()).then(d=> this.src=window.URL.createObjectURL(d)); "`
-      // );
+      const parsedDescription = parse(descriptionHtml || "", {
+        replace: (domNode) => {
+          if (domNode instanceof HtmlReactElement && domNode.name === "img") {
+            return (
+              <AzureImage
+                src={domNode.attribs["src"]}
+                alt={domNode.attribs["alt"]}
+                width={16 * 30}
+                height={9 * 30}
+                quality={100}
+              />
+            );
+          } else {
+            return domNode;
+          }
+        },
+      });
       return (
         <div style={{ color: "#000000" }}>
-          <Title level={4}>{workItem.fields["System.Title"]}</Title>
-          {/* <Paragraph>{foo}</Paragraph> */}
-          <div
-            dangerouslySetInnerHTML={{
-              __html: descriptionHtml
-            }}
-          />
+          <Title className="sticky top-0 bg-white" level={3}>
+            {workItem.fields["System.Title"]}
+          </Title>
+          {parsedDescription}
         </div>
       );
     } else {
@@ -81,7 +92,13 @@ function GitIssueId(props: any) {
 
   return (
     <Tooltip
-      overlayStyle={{ maxWidth: "50vw" }}
+      placement="right"
+      overlayStyle={{
+        maxWidth: "80vw",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        border: "#0000FF 5px solid",
+      }}
       title={renderTitle()}
       open={open}
       onOpenChange={setOpen}

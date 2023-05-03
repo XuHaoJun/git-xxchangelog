@@ -20,7 +20,7 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 regex = "1.8.1"
 azure_devops_rust_api = { version = "0.7.5", features = ["wit"] }
-tauri = { version = "1.2.4", features = ["dialog-all", "fs-all", "path-all", "shell-open"] }
+tauri = { version = "1.2.4", features = ["dialog-all", "fs-all", "http-all", "path-all", "shell-open"] }
 
 [features]
 # by default Tauri runs in production mode

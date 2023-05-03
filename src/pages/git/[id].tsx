@@ -149,14 +149,14 @@ export default function GitPage() {
     shallow
   );
   useEffect(() => {
-    if (activateTabId && tauriLibs) {
+    if (activateTabId) {
       (async () => {
         const tabTitle = await tauriLibs.path.basename(id as string);
         toGitTab(activateTabId, tabTitle, router.asPath);
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tauriLibs]);
+  }, []);
 
   return (
     <main>
