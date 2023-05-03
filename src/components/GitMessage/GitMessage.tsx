@@ -11,7 +11,7 @@ import { useState } from "react";
 
 import { Typography } from "antd";
 
-const { Title } = Typography;
+const { Title, Paragraph } = Typography;
 
 const GitIssueIdSpan = styled.span`
   color: hsl(206, 100%, 40%);
@@ -53,22 +53,40 @@ function GitIssueId(props: any) {
         Boolean(settings.azureDevOps.project),
     }
   );
-  console.log(workItem);
   const renderTitle = () => {
     if (workItem) {
+      const descriptionHtml = workItem.fields["System.Description"] as string;
+      // const regexp = /<img\s+[^>]*?src=(['"])(?<src>[^'"]+)\1[^>]*?>/g;
+      // console.log(regexp.exec(descriptionHtml));
+      // console.log(descriptionHtml.replace(regexp, "fasdjiofjasodifjpaisodjfpasdjfiapsoidfj"))
+      // const foo = descriptionHtml.replace(
+      //   regexp,
+      //   `<img src onerror="fetch('$2',{headers: {Authorization: 'Basic :${settings.azureDevOps.accessToken}'}}).then(r=>r.blob()).then(d=> this.src=window.URL.createObjectURL(d)); "`
+      // );
       return (
-        <div>
-          <Title>{}</Title>
-          {workItem.fields["System.Title"]}
+        <div style={{ color: "#000000" }}>
+          <Title level={4}>{workItem.fields["System.Title"]}</Title>
+          {/* <Paragraph>{foo}</Paragraph> */}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: descriptionHtml
+            }}
+          />
         </div>
       );
     } else {
-      return <span>Loading...</span>;
+      return <span style={{ color: "#000000" }}>Loading...</span>;
     }
   };
 
   return (
-    <Tooltip title={renderTitle()} open={open} onOpenChange={setOpen}>
+    <Tooltip
+      overlayStyle={{ maxWidth: "50vw" }}
+      title={renderTitle()}
+      open={open}
+      onOpenChange={setOpen}
+      color="#ffffff"
+    >
       <GitIssueIdSpan onClick={handleClick(props.issueId)}>
         {props.value}
       </GitIssueIdSpan>
