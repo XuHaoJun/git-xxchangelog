@@ -134,8 +134,22 @@ export default function GitPage() {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data } = useQuery<any>(
-    ["git", id],
+  const { data: refsHash } = useQuery<any>(
+    ["git_refs_hash", id],
+    () =>
+      tauriLibs.api.invoke("git_refs_hash", {
+        path: id,
+      }),
+    {
+      enabled: Boolean(id) && Boolean(tauriLibs),
+      refetchInterval: 30 * 1000,
+      staleTime: 0,
+      cacheTime: 0,
+    }
+  );
+
+  const { data: gitResp } = useQuery<any>(
+    ["git", id, refsHash],
     () =>
       tauriLibs.api.invoke("parse_git", {
         path: id,
@@ -183,7 +197,7 @@ export default function GitPage() {
       </Gitgraph> */}
       <MinimapScrollbar style={{ width: "100vw", height: "100vh" }}>
         <ol>
-          {take(300, data?.commits || []).map((x: any) => (
+          {take(150, gitResp?.commits || []).map((x: any) => (
             <li key={x.oid}>
               <GitMessage data={{ commit: x }} />
             </li>
