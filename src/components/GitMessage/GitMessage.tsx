@@ -41,7 +41,7 @@ function GitIssueId(props: any) {
     ["get_work_item", props.issueId],
     () => {
       console.log("get_work_item");
-      return tauriLibs.api.invoke("get_work_item", {
+      return tauriLibs.api.invoke("azure_get_work_item", {
         accessToken: settings.azureDevOps.accessToken,
         org: settings.azureDevOps.organization,
         id: props.issueId,
@@ -92,12 +92,12 @@ function GitIssueId(props: any) {
 
   return (
     <Tooltip
+    overlayClassName="shadow-2xl"
       placement="right"
       overlayStyle={{
-        maxWidth: "80vw",
+        maxWidth: "50vw",
         maxHeight: "90vh",
         overflowY: "auto",
-        border: "#0000FF 5px solid",
       }}
       title={renderTitle()}
       open={open}
@@ -134,5 +134,21 @@ export function GitMessage({ data, ...others }: any) {
         </Col>
       </Row>
     </div>
+  );
+}
+
+export function GitMessage2({ dataSource }: { dataSource: any[] }) {
+  return (
+    <>
+      {dataSource.map((x: any, i: number) => {
+        if (x.node_type === "issueId") {
+          return (
+            <GitIssueId key={`${i}`} issueId={x.issue_id} value={x.value} />
+          );
+        } else {
+          return <span key={`${i}`}>{x.value}</span>;
+        }
+      })}
+    </>
   );
 }

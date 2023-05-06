@@ -15,7 +15,7 @@ import ReactFlow, {
   useKeyPress,
 } from "reactflow";
 // import "reactflow/dist/style.css";
-import { Row, Col } from "antd";
+import { Row, Col, Layout } from "antd";
 
 import { Inter } from "next/font/google";
 
@@ -29,6 +29,13 @@ import { Scrollbars } from "react-custom-scrollbars-2";
 import { useRootStore } from "@/stores/root.store";
 import { take } from "rambda";
 import MinimapScrollbar from "../../components/Scrollbars/MinimapScrollbar";
+import GitTable from "@/components/GitTable/GitTable";
+import ResizableColumns from "@/components/ResizableColumns";
+import styled from "styled-components";
+
+const { Header, Content, Footer, Sider } = Layout;
+// import { Header, Content, Footer } from "antd/es/layout/layout";
+// import Sider from "antd/es/layout/Sider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -154,7 +161,7 @@ export default function GitPage() {
       tauriLibs.api.invoke("parse_git", {
         path: id,
       }),
-    { enabled: Boolean(id) && Boolean(tauriLibs) }
+    { enabled: Boolean(id) && Boolean(tauriLibs) && Boolean(refsHash) }
   );
 
   const [activateTabId, toGitTab] = useRootStore(
@@ -173,8 +180,14 @@ export default function GitPage() {
   }, []);
 
   return (
-    <main>
-      {/* <ol>
+    <Layout style={{ display: "flex", flexGrow: 1 }}>
+      <Header style={{ height: 84 }}>
+        <div className="logo" />
+      </Header>
+      <Layout>
+        <Sider width={300}></Sider>
+        <Content>
+          {/* <ol>
         {commits.map((x) => (
           <li key={x.oid}>
             <a>{take(12, x.oid)}</a>&nbsp;{x.author.name}&nbsp;{x.author.email}
@@ -195,7 +208,11 @@ export default function GitPage() {
           });
         }}
       </Gitgraph> */}
-      <MinimapScrollbar style={{ width: "100vw", height: "100vh" }}>
+          <StyledContentContainer>
+            <GitTable dataSource={gitResp?.commits || []}></GitTable>
+          </StyledContentContainer>
+          {/* <ResizableColumns/> */}
+          {/* <MinimapScrollbar style={{ width: "100vw", height: "100vh" }}>
         <ol>
           {take(150, gitResp?.commits || []).map((x: any) => (
             <li key={x.oid}>
@@ -203,12 +220,20 @@ export default function GitPage() {
             </li>
           ))}
         </ol>
-      </MinimapScrollbar>
-      {/* <div style={{ width: "100vw", height: "90vh" }}>
+      </MinimapScrollbar> */}
+          {/* <div style={{ width: "100vw", height: "90vh" }}>
         <ReactFlowProvider>
           <Flow commits={data?.commits || []} />
         </ReactFlowProvider>
       </div> */}
-    </main>
+        </Content>
+        <Sider width={400}></Sider>
+      </Layout>
+      <Footer style={{ height: "28px", padding: 0 }}>status bar like vscode</Footer>
+    </Layout>
   );
 }
+
+const StyledContentContainer = styled.div`
+  height: calc(100vh - 46px - 84px - 28px);
+`;
