@@ -242,7 +242,7 @@ export default function GitPage() {
         /> */}
         </Header>
         <Layout>
-          <Sider width={300} className="xu-left-sider">
+          <Sider width={320} className="xu-left-sider">
             <Menu
               style={{ overflow: "auto" }}
               defaultSelectedKeys={["1"]}
@@ -379,7 +379,6 @@ function getRemoteBranchesMenuItems(brances: GitBranch[]): MenuItem[] {
   return gitBranchesToMenuItems(
     brances
       .filter((x) => x.branch_type === "remote")
-      .map((x) => ({ ...x, name: tail(x.name.split("/")).join("/") }))
   );
 }
 
