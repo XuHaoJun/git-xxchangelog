@@ -193,7 +193,7 @@ export default function GitPage() {
         key: "local",
         label: "LOCAL",
         icon: <LaptopOutlined />,
-        children: gitResp.branches
+        children: gitResp?.branches
           ? getLocalBranchesMenuItems(gitResp.branches)
           : [],
       },
